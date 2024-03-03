@@ -31,3 +31,30 @@
 - Testes automatizados demonstrando a eficácia e a robustez do rate limiter.
 - Utilize docker/docker-compose para que possamos realizar os testes de sua aplicação.
 - O servidor web deve responder na porta 8080.
+
+## Rate Limiter
+
+O Rate Limiter e um middleware que possibilita limitar o número de requisições por segundo com base em um endereço IP ou um token de acesso.
+Nessa implementação, deve ser passar para a função que cria a estrutura o número de requisições permitidas por segundo sem o header API_KEY definido, o número de requisições permitidas por segundo com o header API_KEY definido, o tempo em segundos quando bloqueado e um estrutura do cache.
+
+A estrutura de Cache deve ser a interface a seguir:
+
+```go
+type Cache interface {
+  Get(key string) (int, bool)
+  Set(key string, value int)
+}
+```
+
+As configurações são feitas através de variáveis de ambiente ou em um arquivo “.env” na pasta raiz.
+
+```env
+PORT=8080 # porta do servidor web
+
+MAX_IP_REQUESTS_PER_SECOND=10 # maximo de requisições por segundo sem o header API_KEY
+MAX_TOKEN_REQUESTS_PER_SECOND=100 # maximo de requisições por segundo com o header API_KEY
+TIME_BLOCK_IN_SECOND=5 # tempo de bloqueio em segundos
+
+REDIS_HOST=localhost # host do redis (cache escolhido para a implementação)
+REDIS_PORT=6379 # porta do redis
+```
