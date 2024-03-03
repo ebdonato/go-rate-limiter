@@ -108,7 +108,7 @@ func (rl *RateLimiter) RateLimit(next http.Handler) http.Handler {
 		if count+1 > maxRequest {
 			log.Println("Too many requests")
 			w.WriteHeader(http.StatusTooManyRequests)
-			w.Write([]byte("You have reached the maximum number of requests or actions allowed within a certain time frame"))
+			w.Write([]byte("you have reached the maximum number of requests or actions allowed within a certain time frame"))
 			return
 		}
 
