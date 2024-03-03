@@ -1,7 +1,6 @@
 package http
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 
@@ -10,21 +9,11 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
-type Server struct {
-	Router chi.Router
-}
-
 func NewWebServer(
-	maxIpRequests, maxTokenRequests, blockTime int, redisHost, redisPort string) *Server {
-
-	log.Println("Creating cache...")
-	redis, err := db.NewRedisCache(fmt.Sprintf("%s:%s", redisHost, redisPort))
-	if err != nil {
-		panic(err)
-	}
+	maxIpRequests, maxTokenRequests, blockTime int, cache db.Cache) *chi.Mux {
 
 	log.Println("Limiter Configs: ", "maxIpRequests: ", maxIpRequests, " | maxTokenRequests: ", maxTokenRequests, " | blockTime: ", blockTime)
-	limiter := middleware.NewRateLimiter(maxIpRequests, maxTokenRequests, blockTime, redis)
+	limiter := middleware.NewRateLimiter(maxIpRequests, maxTokenRequests, blockTime, cache)
 
 	r := chi.NewRouter()
 	r.Use(limiter.RateLimit)
@@ -32,7 +21,5 @@ func NewWebServer(
 		w.Write([]byte("Ok"))
 	})
 
-	return &Server{
-		Router: r,
-	}
+	return r
 }
