@@ -21,6 +21,7 @@ type webServerSuite struct {
 	blockTime        int
 	redisHost        string
 	redisPort        string
+	redis            *db.RedisCache
 }
 
 func (suite *webServerSuite) SetupSuite() {
@@ -36,9 +37,15 @@ func (suite *webServerSuite) SetupSuite() {
 		panic(err)
 	}
 
+	suite.redis = redis
+
 	r := NewWebServer(suite.maxIpRequests, suite.maxTokenRequests, suite.blockTime, redis)
 
 	suite.router = r
+}
+
+func (suite *webServerSuite) SetupTest() {
+	suite.redis.Clear()
 }
 
 func (suite *webServerSuite) TestWebServerRunning() {

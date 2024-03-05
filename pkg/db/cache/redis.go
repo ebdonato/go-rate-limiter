@@ -42,3 +42,19 @@ func (c *RedisCache) Set(key, value string, expiration time.Duration) error {
 	}
 	return nil
 }
+
+func (c *RedisCache) Delete(key string) error {
+	err := c.client.Del(context.Background(), key).Err()
+	if err != nil {
+		return fmt.Errorf("FAILED TO DELETE VALUE FROM REDIS: %v", err)
+	}
+	return nil
+}
+
+func (c *RedisCache) Clear() error {
+	err := c.client.FlushAll(context.Background()).Err()
+	if err != nil {
+		return fmt.Errorf("FAILED TO FLASH ALL KEYS: %v", err)
+	}
+	return nil
+}
